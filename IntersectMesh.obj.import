@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cqir04q5w2dxu"
+path="res://.godot/imported/IntersectMesh.obj-8dd951da10fb0f182fb3b0950bd6afb3.mesh"
+
+[deps]
+
+files=["res://.godot/imported/IntersectMesh.obj-8dd951da10fb0f182fb3b0950bd6afb3.mesh"]
+
+source_file="res://IntersectMesh.obj"
+dest_files=["res://.godot/imported/IntersectMesh.obj-8dd951da10fb0f182fb3b0950bd6afb3.mesh", "res://.godot/imported/IntersectMesh.obj-8dd951da10fb0f182fb3b0950bd6afb3.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

@@ -1,19 +1,33 @@
-[gd_scene load_steps=6 format=3 uid="uid://dhsy0mylwsaba"]
+[gd_scene load_steps=10 format=3 uid="uid://dhsy0mylwsaba"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_n2cga"]
+[ext_resource type="ArrayMesh" uid="uid://cqir04q5w2dxu" path="res://IntersectMesh.obj" id="2_2bs1g"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s5wyx"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_jwull"]
 points = PackedVector3Array(0, 0, 0, 50, 50, -100, -50, 50, -100, -50, -50, -100, 50, -50, -100)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b5tar"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w0llo"]
 transparency = 1
 shading_mode = 0
-albedo_color = Color(0, 1, 0, 0.239216)
+albedo_color = Color(0, 0.929412, 0.635294, 0.137255)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_eq166"]
-material = SubResource("StandardMaterial3D_b5tar")
+[sub_resource type="PlaneMesh" id="PlaneMesh_4w2h6"]
+material = SubResource("StandardMaterial3D_w0llo")
+size = Vector2(0.1, 0.1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1qiov"]
+viewport_path = NodePath("Camera/PhotoViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_82kg8"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_1qiov")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8qrmd"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_82kg8")
 size = Vector2(0.1, 0.1)
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("capture_field", "captured_objects")]
@@ -26,16 +40,55 @@ captured_objects = NodePath("Camera/CapturedObjects")
 shape = SubResource("CapsuleShape3D_s5wyx")
 
 [node name="Camera" type="Camera3D" parent="."]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.561019, 0)
+current = true
 
 [node name="CaptureField" type="Area3D" parent="Camera"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Camera/CaptureField"]
 shape = SubResource("ConvexPolygonShape3D_jwull")
 
-[node name="CameraFilter" type="MeshInstance3D" parent="Camera"]
+[node name="CapturingFilter" type="MeshInstance3D" parent="Camera"]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.1)
-mesh = SubResource("PlaneMesh_eq166")
+layers = 2
+mesh = SubResource("PlaneMesh_4w2h6")
+
+[node name="CapturedPhoto" type="MeshInstance3D" parent="Camera"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.1)
+visible = false
+layers = 2
+mesh = SubResource("PlaneMesh_8qrmd")
 
 [node name="CapturedObjects" type="Node3D" parent="Camera"]
 unique_name_in_owner = true
+visible = false
+
+[node name="CSGIntersector" type="CSGMesh3D" parent="Camera"]
+unique_name_in_owner = true
+visible = false
+operation = 1
+mesh = ExtResource("2_2bs1g")
+
+[node name="CapturedObjectsCSG" type="Node3D" parent="Camera"]
+unique_name_in_owner = true
+visible = false
+
+[node name="PhotoViewport" type="SubViewport" parent="Camera"]
+unique_name_in_owner = true
+render_target_update_mode = 0
+
+[node name="PhotoCamera" type="Camera3D" parent="Camera/PhotoViewport"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.561019, 0)
+keep_aspect = 0
+cull_mask = 1048573
+fov = 53.1
+
+[node name="ReenableFilterTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="ReenableFilterTimer" to="." method="_on_reenable_filter_timer_timeout"]

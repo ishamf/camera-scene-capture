@@ -48,3 +48,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.86557, 1.66918, 1.90462)
 
 [node name="Pyramid2" parent="." instance=ExtResource("6_3o1n5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.08644, 1.72142, 1.98006)
+
+[editable path="Pyramid"]
