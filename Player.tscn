@@ -1,14 +1,41 @@
-[gd_scene load_steps=3 format=3 uid="uid://dhsy0mylwsaba"]
+[gd_scene load_steps=6 format=3 uid="uid://dhsy0mylwsaba"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_n2cga"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s5wyx"]
 
-[node name="Player" type="CharacterBody3D"]
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_jwull"]
+points = PackedVector3Array(0, 0, 0, 50, 50, -100, -50, 50, -100, 0, 0, 0, -50, -50, -100, 50, -50, -100, 0, 0, 0, 50, 50, -100, 50, -50, -100, 0, 0, 0, -50, -50, -100, -50, 50, -100, -50, 50, -100, -50, -50, -100, 50, -50, -100, 50, -50, -100, 50, 50, -100, -50, 50, -100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b5tar"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 1, 0, 0.239216)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_eq166"]
+material = SubResource("StandardMaterial3D_b5tar")
+size = Vector2(0.1, 0.1)
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("capture_field", "captured_objects")]
+collision_layer = 0
 script = ExtResource("1_n2cga")
+capture_field = NodePath("Camera/CaptureField")
+captured_objects = NodePath("Camera/CapturedObjects")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_s5wyx")
 
 [node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.561019, 0)
+
+[node name="CaptureField" type="Area3D" parent="Camera"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera/CaptureField"]
+shape = SubResource("ConvexPolygonShape3D_jwull")
+
+[node name="CameraFilter" type="MeshInstance3D" parent="Camera"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.1)
+mesh = SubResource("PlaneMesh_eq166")
+
+[node name="CapturedObjects" type="Node3D" parent="Camera"]
+unique_name_in_owner = true
