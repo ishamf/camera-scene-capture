@@ -1,0 +1,39 @@
+[gd_scene load_steps=8 format=3 uid="uid://d2xo0df6lfn0w"]
+
+[ext_resource type="PackedScene" uid="uid://8136bke88opi" path="res://Playspace.blend" id="3_dhjqf"]
+[ext_resource type="PackedScene" uid="uid://dhsy0mylwsaba" path="res://Player.tscn" id="3_q4v8k"]
+[ext_resource type="PackedScene" uid="uid://ce2cv50n2kn8h" path="res://Table.blend" id="4_adxjy"]
+[ext_resource type="PackedScene" uid="uid://cpxgp8gi83rsa" path="res://Cube.blend" id="4_snv38"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nmar4"]
+
+[sub_resource type="Sky" id="Sky_oxo0i"]
+sky_material = SubResource("ProceduralSkyMaterial_nmar4")
+
+[sub_resource type="Environment" id="Environment_of1gp"]
+background_mode = 2
+sky = SubResource("Sky_oxo0i")
+ambient_light_color = Color(0.772549, 0.803922, 0.92549, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Player" parent="." instance=ExtResource("3_q4v8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.275398, 1.98162, 3.63186)
+
+[node name="Main Light" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.674418, 0.738349, 0, -0.738349, 0.674418, 0, 9.48871, 13.3432)
+
+[node name="Playspace" parent="." instance=ExtResource("3_dhjqf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.77786, 0, 0.56713)
+
+[node name="Table" parent="." instance=ExtResource("4_adxjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.43828, 1.26033, 1.68614)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_of1gp")
+
+[node name="Cube" parent="." instance=ExtResource("4_snv38")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.52969, 1.69561, 2.40586)
+
+[node name="Cube2" parent="." instance=ExtResource("4_snv38")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.08362, 1.69561, 2.26151)
