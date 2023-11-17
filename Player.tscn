@@ -5,7 +5,7 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s5wyx"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_jwull"]
-points = PackedVector3Array(0, 0, 0, 50, 50, -100, -50, 50, -100, 0, 0, 0, -50, -50, -100, 50, -50, -100, 0, 0, 0, 50, 50, -100, 50, -50, -100, 0, 0, 0, -50, -50, -100, -50, 50, -100, -50, 50, -100, -50, -50, -100, 50, -50, -100, 50, -50, -100, 50, 50, -100, -50, 50, -100)
+points = PackedVector3Array(0, 0, 0, 50, 50, -100, -50, 50, -100, -50, -50, -100, 50, -50, -100)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b5tar"]
 transparency = 1

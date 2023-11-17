@@ -35,10 +35,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.43828, 1.26033, 1.68614)
 environment = SubResource("Environment_of1gp")
 
 [node name="Cube" parent="." instance=ExtResource("4_snv38")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.59832, 1.84896, 2.0089)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.64202, 2.02158, 1.94818)
 
 [node name="Cube2" parent="." instance=ExtResource("4_snv38")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.08362, 1.69561, 2.26151)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.60231, 1.99866, 2.26151)
 
 [node name="GameUI" parent="." node_paths=PackedStringArray("player") instance=ExtResource("5_tn4xx")]
 player = NodePath("../Player")
@@ -47,4 +47,4 @@ player = NodePath("../Player")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.86557, 1.66918, 1.90462)
 
 [node name="Pyramid2" parent="." instance=ExtResource("6_3o1n5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.18857, 1.68819, 1.98006)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.08644, 1.72142, 1.98006)
