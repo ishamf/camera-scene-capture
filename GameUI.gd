@@ -32,7 +32,7 @@ func update_input_states(target: bool):
 func _process(_delta):
 	info_text.text = ("\n".join(
 		[
-			"ESC to release mouse",
+			"Q to release mouse",
 			"C to capture, V to apply",
 			"Space to jump, Z to reset position",
 			"Items in field of view: %s" % player.capture_field.get_overlapping_bodies().size(),
@@ -47,3 +47,12 @@ func _on_input_changed():
 
 func _on_enable_mouse_pressed():
 	input_manager.update_input_states(true)
+
+
+func _on_fullscreen_pressed():
+	var window = get_window()
+
+	if window.mode == window.MODE_FULLSCREEN:
+		window.mode = window.MODE_WINDOWED
+	else:
+		window.mode = window.MODE_FULLSCREEN

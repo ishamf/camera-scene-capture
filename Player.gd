@@ -15,6 +15,8 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var input_manager = get_node("/root/InputManager")
 
+var total_times = [0, 0, 0, 0, 0]
+
 var mouse_sens = 0.3
 
 var current_angle = 0
@@ -48,6 +50,10 @@ func apply_look(vec: Vector2):
 
 
 func create_intersected_body(body: Node3D, is_subtract: bool = false):
+
+	var current_time = Time.get_ticks_usec()
+	var duration
+
 	var body_mesh: MeshInstance3D = null
 	var collision_body: CollisionObject3D = null
 	var body_parent = body.get_parent()
@@ -79,6 +85,11 @@ func create_intersected_body(body: Node3D, is_subtract: bool = false):
 		# 	else:
 		# 		print_debug("Unknown shape type.")
 		# 		return
+	
+	duration = (Time.get_ticks_usec() - current_time)
+	total_times[0] += duration
+	print("Time to find body: %s" % duration)
+	current_time = Time.get_ticks_usec()
 
 	if not body_mesh or not collision_body:
 		print_debug("No mesh or collision body found in the captured object.")
@@ -104,12 +115,27 @@ func create_intersected_body(body: Node3D, is_subtract: bool = false):
 	combiner.global_transform = body_mesh.global_transform
 	intersector.global_transform = %CSGIntersector.global_transform
 
+	duration = (Time.get_ticks_usec() - current_time)
+	total_times[1] += duration
+	print("Time to create CSG: %s" % duration)
+	current_time = Time.get_ticks_usec()
+
 	combiner._update_shape()
+
+	duration = (Time.get_ticks_usec() - current_time)
+	total_times[2] += duration
+	print("Time to update shape: %s" % duration)
+	current_time = Time.get_ticks_usec()
 
 	var mesh_tuple = combiner.get_meshes()
 
 	var new_mesh_transform = mesh_tuple[0]
 	var new_generated_mesh: Mesh = mesh_tuple[1].duplicate()
+
+	duration = (Time.get_ticks_usec() - current_time)
+	total_times[3] += duration
+	print("Time to get mesh: %s" % duration)
+	current_time = Time.get_ticks_usec()
 
 	var new_global_transform = combiner.global_transform * new_mesh_transform
 
@@ -153,6 +179,11 @@ func create_intersected_body(body: Node3D, is_subtract: bool = false):
 	body_parent.add_child(new_item)
 	new_item.global_transform = new_global_transform
 
+	duration = (Time.get_ticks_usec() - current_time)
+	total_times[4] += duration
+	print("Time to create new body: %s" % duration)
+	current_time = Time.get_ticks_usec()
+
 	print("Done")
 	return new_item
 
@@ -190,6 +221,9 @@ func _process(_delta):
 
 			intersected_body.set_process_mode(PROCESS_MODE_DISABLED)
 
+		print(total_times)
+		total_times = [0, 0, 0, 0, 0]
+
 		%CapturingFilter.visible = false
 
 		# Since the viewport is not a Node3D, it doesn't pass the global transform to its children, we need to transfer it manually
@@ -205,6 +239,9 @@ func _process(_delta):
 			create_intersected_body(body, true)
 
 			body.queue_free()
+
+		print(total_times)
+		total_times = [0, 0, 0, 0, 0]
 
 		for child in captured_objects.get_children():
 			child.reparent(get_parent())
