@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://caaqwo2wmvw63"]
+[gd_scene load_steps=5 format=3 uid="uid://caaqwo2wmvw63"]
 
 [ext_resource type="Script" path="res://GameUI.gd" id="1_732vb"]
 [ext_resource type="PackedScene" uid="uid://cggqb75a8w8r" path="res://addons/debug_menu/debug_menu.tscn" id="2_yovbr"]
+[ext_resource type="PackedScene" uid="uid://d3pl17lkulekm" path="res://TouchInput.tscn" id="3_46fjo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n5py3"]
 
 [node name="GameUI" type="Control"]
 layout_mode = 3
@@ -14,25 +17,71 @@ script = ExtResource("1_732vb")
 
 [node name="CanvasLayer" parent="." instance=ExtResource("2_yovbr")]
 
-[node name="Panel" type="Panel" parent="."]
+[node name="TouchInput" parent="." instance=ExtResource("3_46fjo")]
+unique_name_in_owner = true
+layout_mode = 1
+offset_right = -0.00012207
+
+[node name="MnKPanel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -402.0
-offset_top = -224.0
-offset_right = -26.0
-offset_bottom = -25.0
+offset_left = -410.0
+offset_top = -213.0
+offset_right = -34.0
+offset_bottom = -23.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="InfoText" type="Label" parent="Panel"]
+[node name="InfoText" type="Label" parent="MnKPanel"]
 unique_name_in_owner = true
 layout_mode = 1
-offset_left = 23.0
-offset_top = 22.0
-offset_right = 132.0
-offset_bottom = 51.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -54.5
+offset_top = -14.5
+offset_right = 54.5
+offset_bottom = 14.5
+grow_horizontal = 2
+grow_vertical = 2
 text = "Info text"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GamepadPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -170.0
+offset_top = -127.0
+offset_right = 172.0
+offset_bottom = -47.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_n5py3")
+
+[node name="EnableMouse" type="Button" parent="GamepadPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -148.0
+offset_top = -32.0
+offset_right = 150.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Enable Mouse and Keyboard Controls"
+
+[connection signal="pressed" from="GamepadPanel/EnableMouse" to="." method="_on_enable_mouse_pressed"]

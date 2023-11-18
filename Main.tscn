@@ -48,9 +48,6 @@ player = NodePath("../Player")
 [node name="Pyramid" parent="." instance=ExtResource("6_3o1n5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.86557, 1.66918, 1.90462)
 
-[node name="Cube" parent="Pyramid/Cube" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0798394, 0)
-
 [node name="Pyramid2" parent="." instance=ExtResource("6_3o1n5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.64206, 1.90082, 1.73091)
 
@@ -62,5 +59,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.9161, 0.079237, -10.1383)
 
 [node name="InitialPosition" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.96365, 1.98162, 4.90427)
-
-[editable path="Pyramid"]

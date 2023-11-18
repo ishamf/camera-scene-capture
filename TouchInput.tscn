@@ -1,0 +1,101 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3pl17lkulekm"]
+
+[ext_resource type="Script" path="res://TouchInput.gd" id="1_c3xej"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://joystick/virtual_joystick.tscn" id="2_gw0c5"]
+
+[node name="TouchInput" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_c3xej")
+
+[node name="Movement" parent="." instance=ExtResource("2_gw0c5")]
+layout_mode = 1
+offset_left = 5.0
+offset_top = -305.0
+offset_right = 305.0
+offset_bottom = -5.0
+action_left = "game_left"
+action_right = "game_right"
+action_up = "game_up"
+action_down = "game_down"
+
+[node name="Looks" parent="." instance=ExtResource("2_gw0c5")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.998
+anchor_right = 0.998
+offset_left = -322.696
+offset_top = -315.0
+offset_right = -22.696
+offset_bottom = -15.0
+action_left = "look_left"
+action_right = "look_right"
+action_up = "look_up"
+action_down = "look_down"
+
+[node name="Capture" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
+offset_top = 145.0
+offset_right = -180.0
+offset_bottom = 209.0
+text = "Capture"
+
+[node name="Apply" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -218.0
+offset_top = 47.0
+offset_right = -98.0
+offset_bottom = 111.0
+text = "Apply"
+
+[node name="Jump" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -222.0
+offset_top = 242.0
+offset_right = -102.0
+offset_bottom = 306.0
+text = "Jump"
+
+[node name="Reset Pos" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -135.0
+offset_top = 146.0
+offset_right = -15.0
+offset_bottom = 210.0
+text = "Reset Pos"
+
+[node name="Reset Scene" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -474.0
+offset_top = -617.0
+offset_right = -354.0
+offset_bottom = -553.0
+text = "Reset Scene"
+
+[connection signal="pressed" from="Capture" to="." method="_on_capture_pressed"]
+[connection signal="pressed" from="Apply" to="." method="_on_apply_pressed"]
+[connection signal="pressed" from="Jump" to="." method="_on_jump_pressed"]
+[connection signal="pressed" from="Reset Pos" to="." method="_on_reset_pos_pressed"]
+[connection signal="pressed" from="Reset Scene" to="." method="_on_reset_scene_pressed"]

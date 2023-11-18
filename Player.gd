@@ -22,25 +22,11 @@ var current_angle = 0
 
 
 func _input(event):
-	if event is InputEventMouseButton:
-		if not event.is_released() or event.button_index != MOUSE_BUTTON_LEFT:
-			return
-		if mouse_captured:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-			mouse_captured = false
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-			mouse_captured = true
-
-	elif event is InputEventMouseMotion and mouse_captured:
+	if event is InputEventMouseMotion and mouse_captured:
 		var changeh = -event.relative.x * mouse_sens
 		var changev = -event.relative.y * mouse_sens
 
-		rotate_y(deg_to_rad(changeh))
-
-		if current_angle + changev < 90 and current_angle + changev > -90:
-			current_angle += changev
-			$Camera.rotate_x(deg_to_rad(changev))
+		apply_look(Vector2(changeh, changev))
 
 
 enum ShapeType {
@@ -52,6 +38,14 @@ enum BodyType {
 	RIGID,
 	STATIC,
 }
+
+
+func apply_look(vec: Vector2):
+	rotate_y(deg_to_rad(vec.x))
+
+	if current_angle + vec.y < 90 and current_angle + vec.y > -90:
+		current_angle += vec.y
+		$Camera.rotate_x(deg_to_rad(vec.y))
 
 
 func create_intersected_body(body: Node3D, is_subtract: bool = false):
@@ -222,12 +216,6 @@ func _process(_delta):
 		global_transform = initial_player_position.global_transform
 		velocity = Vector3(0, 0, 0)
 
-	if Input.is_action_just_pressed("restart_game"):
-		if mouse_captured:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-			mouse_captured = false
-		get_tree().reload_current_scene()
-
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -247,6 +235,12 @@ func _physics_process(delta):
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
+
+	var look_dir = (
+		Input.get_vector("look_left", "look_right", "look_up", "look_down") * Vector2(-2, -2)
+	)
+
+	apply_look(look_dir)
 
 	move_and_slide()
 
