@@ -12,6 +12,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @export var captured_objects: Node3D = null
 
 @export var mouse_captured = false
+@export var initial_player_position: Node3D = null
 
 var mouse_sens = 0.3
 
@@ -216,6 +217,16 @@ func _process(_delta):
 
 		$ReenableFilterTimer.start()
 		%CapturedPhoto.visible = false
+
+	if Input.is_action_just_pressed("reset_position"):
+		global_transform = initial_player_position.global_transform
+		velocity = Vector3(0, 0, 0)
+
+	if Input.is_action_just_pressed("restart_game"):
+		if mouse_captured:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			mouse_captured = false
+		get_tree().reload_current_scene()
 
 
 func _physics_process(delta):

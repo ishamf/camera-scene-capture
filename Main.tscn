@@ -20,8 +20,9 @@ ambient_light_color = Color(0.772549, 0.803922, 0.92549, 1)
 
 [node name="Node3D" type="Node3D"]
 
-[node name="Player" parent="." instance=ExtResource("3_q4v8k")]
+[node name="Player" parent="." node_paths=PackedStringArray("initial_player_position") instance=ExtResource("3_q4v8k")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.96365, 1.98162, 4.90427)
+initial_player_position = NodePath("../InitialPosition")
 
 [node name="Main Light" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.674418, 0.738349, 0, -0.738349, 0.674418, 0, 9.48871, 13.3432)
@@ -58,5 +59,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.9875, 0, -4.71465)
 
 [node name="BridgeSegment2" parent="." instance=ExtResource("7_jwql2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.9161, 0.079237, -10.1383)
+
+[node name="InitialPosition" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.96365, 1.98162, 4.90427)
 
 [editable path="Pyramid"]

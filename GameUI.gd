@@ -11,12 +11,20 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if player.mouse_captured:
-		%InfoText.text = ("\n".join(
-			[
-				"Left click to release, C to capture, V to apply",
-				"Items to be captured: %s" % player.capture_field.get_overlapping_bodies().size(),
-				"Captured items: %s" % player.captured_objects_data.size(),
-			]
-		))
+		%InfoText.text = (
+			"\n"
+			. join(
+				[
+					"Left click to release mouse",
+					"C to capture, V to apply",
+					"Space to jump, Z to reset position",
+					(
+						"Items in field of view: %s"
+						% player.capture_field.get_overlapping_bodies().size()
+					),
+					"Captured items: %s" % player.captured_objects_data.size(),
+				]
+			)
+		)
 	else:
-		%InfoText.text = "Left click to capture"
+		%InfoText.text = "Left click to capture mouse and look around"
