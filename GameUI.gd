@@ -5,7 +5,7 @@ extends Control
 @onready var info_text = %InfoText
 @onready var input_manager = get_node("/root/InputManager")
 
-var is_touchscreen_available = DisplayServer.is_touchscreen_available()
+var is_touchscreen_available = true # DisplayServer.is_touchscreen_available()
 
 
 # Called when the node enters the scene tree for the first time.

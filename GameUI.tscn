@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://GameUI.gd" id="1_732vb"]
 [ext_resource type="PackedScene" uid="uid://cggqb75a8w8r" path="res://addons/debug_menu/debug_menu.tscn" id="2_yovbr"]
-[ext_resource type="PackedScene" path="res://TouchInput.tscn" id="3_46fjo"]
+[ext_resource type="PackedScene" uid="uid://d3pl17lkulekm" path="res://TouchInput.tscn" id="3_46fjo"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n5py3"]
 

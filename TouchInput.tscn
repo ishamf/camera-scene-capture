@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://d3pl17lkulekm"]
+[gd_scene load_steps=7 format=3 uid="uid://d3pl17lkulekm"]
 
 [ext_resource type="Script" path="res://TouchInput.gd" id="1_c3xej"]
 [ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://joystick/virtual_joystick.tscn" id="2_gw0c5"]
+[ext_resource type="Texture2D" uid="uid://e1c15cg4b5l5" path="res://icons/camera.svg" id="3_ixnmn"]
+[ext_resource type="Texture2D" uid="uid://dmw5t3uxp2aei" path="res://icons/undo-variant.svg" id="4_pqol5"]
+[ext_resource type="Texture2D" uid="uid://b6wlf03ixsccc" path="res://icons/arrow-up-bold-outline.svg" id="5_fmqmt"]
+[ext_resource type="Texture2D" uid="uid://5yett56ebdye" path="res://icons/panorama-variant-outline.svg" id="6_c8jk5"]
 
 [node name="TouchInput" type="Control"]
 layout_mode = 3
@@ -37,50 +41,6 @@ action_right = "look_right"
 action_up = "look_up"
 action_down = "look_down"
 
-[node name="Capture" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -300.0
-offset_top = 145.0
-offset_right = -180.0
-offset_bottom = 209.0
-text = "Capture"
-
-[node name="Apply" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -218.0
-offset_top = 47.0
-offset_right = -98.0
-offset_bottom = 111.0
-text = "Apply"
-
-[node name="Jump" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -222.0
-offset_top = 242.0
-offset_right = -102.0
-offset_bottom = 306.0
-text = "Jump"
-
-[node name="Reset Pos" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -135.0
-offset_top = 146.0
-offset_right = -15.0
-offset_bottom = 210.0
-text = "Reset Pos"
-
 [node name="Reset Scene" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -94,8 +54,35 @@ offset_right = -354.0
 offset_bottom = -553.0
 text = "Reset Scene"
 
-[connection signal="pressed" from="Capture" to="." method="_on_capture_pressed"]
-[connection signal="pressed" from="Apply" to="." method="_on_apply_pressed"]
-[connection signal="pressed" from="Jump" to="." method="_on_jump_pressed"]
-[connection signal="pressed" from="Reset Pos" to="." method="_on_reset_pos_pressed"]
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -176.0
+offset_top = 158.0
+offset_right = -136.0
+offset_bottom = 198.0
+grow_horizontal = 0
+
+[node name="Capture" type="TouchScreenButton" parent="Control"]
+position = Vector2(-105, -31)
+texture_normal = ExtResource("3_ixnmn")
+
+[node name="Reset Pos" type="TouchScreenButton" parent="Control"]
+position = Vector2(71, -34)
+texture_normal = ExtResource("4_pqol5")
+
+[node name="Jump" type="TouchScreenButton" parent="Control"]
+position = Vector2(-15, 65)
+texture_normal = ExtResource("5_fmqmt")
+
+[node name="Apply" type="TouchScreenButton" parent="Control"]
+position = Vector2(-15, -129)
+texture_normal = ExtResource("6_c8jk5")
+
 [connection signal="pressed" from="Reset Scene" to="." method="_on_reset_scene_pressed"]
+[connection signal="pressed" from="Control/Capture" to="." method="_on_capture_pressed"]
+[connection signal="pressed" from="Control/Reset Pos" to="." method="_on_reset_pos_pressed"]
+[connection signal="pressed" from="Control/Jump" to="." method="_on_jump_pressed"]
+[connection signal="pressed" from="Control/Apply" to="." method="_on_apply_pressed"]
