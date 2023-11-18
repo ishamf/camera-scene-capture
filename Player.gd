@@ -108,19 +108,51 @@ func intersect_new_body(body: Node3D):
 	combiner.add_child(csg_mesh)
 	combiner.add_child(intersector)
 
-	(
-		captured_objects_data
-		. append(
-			{
-				"combiner": combiner,
-				"shape_type": shape_type,
-				"body_type": body_type,
-			}
-		)
-	)
+	combiner._update_shape()
 
-	%CapturedObjectsCSG.add_child(combiner)
+	var mesh_tuple = combiner.get_meshes()
+
+	var new_transform = mesh_tuple[0]
+	var new_generated_mesh: Mesh = mesh_tuple[1].duplicate()
+
+	var mesh_instance = MeshInstance3D.new()
+	mesh_instance.mesh = new_generated_mesh
+
+	var new_item
+
+	if body_type == BodyType.RIGID:
+		var new_body = RigidBody3D.new()
+		new_body.transform = new_transform
+		new_body.add_child(mesh_instance)
+
+		var shape = CollisionShape3D.new()
+
+		new_body.add_child(shape)
+		shape.make_convex_from_siblings()
+
+		new_item = new_body
+
+	else:
+		if shape_type == ShapeType.CONVEX:
+			mesh_instance.create_multiple_convex_collisions()
+			new_item = mesh_instance
+		else:
+			var new_body = StaticBody3D.new()
+			mesh_instance.add_child(new_body)
+
+			var shape = CollisionShape3D.new()
+
+			new_body.add_child(shape)
+			shape.shape = mesh_instance.mesh.create_trimesh_shape()
+
+			new_item = mesh_instance
+
+	combiner.queue_free()
+
+	new_item.set_meta("item_root", true)
+
 	print("Done")
+	return new_item
 
 
 func _process(_delta):
@@ -140,8 +172,10 @@ func _process(_delta):
 			var new_body = body.duplicate()
 			body.add_sibling(new_body)
 			new_body.reparent(%CapturedObjects)
-			intersect_new_body(new_body)
+			var intersected_body = intersect_new_body(new_body)
 			new_body.queue_free()
+			%CapturedObjects.add_child(intersected_body)
+			intersected_body.set_process_mode(PROCESS_MODE_DISABLED)
 
 		%CapturingFilter.visible = false
 		%PhotoViewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_ONCE
@@ -149,56 +183,9 @@ func _process(_delta):
 		%CapturedPhoto.visible = true
 
 	if Input.is_action_just_pressed("apply_photo"):
-		for combiner_data in captured_objects_data:
-			var combiner = combiner_data["combiner"]
-			var shape_type = combiner_data["shape_type"]
-			var body_type = combiner_data["body_type"]
-
-			var mesh_tuple = combiner.get_meshes()
-
-			var new_transform = mesh_tuple[0]
-			var new_generated_mesh: Mesh = mesh_tuple[1].duplicate()
-
-			var mesh_instance = MeshInstance3D.new()
-			mesh_instance.mesh = new_generated_mesh
-
-			var new_item
-
-			if body_type == BodyType.RIGID:
-				var new_body = RigidBody3D.new()
-				new_body.transform = new_transform
-				new_body.add_child(mesh_instance)
-
-				var shape = CollisionShape3D.new()
-
-				new_body.add_child(shape)
-				shape.make_convex_from_siblings()
-
-				new_item = new_body
-
-			else:
-				if shape_type == ShapeType.CONVEX:
-					mesh_instance.create_multiple_convex_collisions()
-					new_item = mesh_instance
-				else:
-					var new_body = StaticBody3D.new()
-					mesh_instance.add_child(new_body)
-
-					var shape = CollisionShape3D.new()
-
-					new_body.add_child(shape)
-					shape.shape = mesh_instance.mesh.create_trimesh_shape()
-
-					new_item = mesh_instance
-
-			combiner.queue_free()
-
-			new_item.set_meta("item_root", true)
-
-			captured_objects.add_child(new_item)
-			new_item.reparent(get_parent())
-
-		captured_objects_data.clear()
+		for child in captured_objects.get_children():
+			child.reparent(get_parent())
+			child.set_process_mode(PROCESS_MODE_INHERIT)
 
 		$ReenableFilterTimer.start()
 		%CapturedPhoto.visible = false
