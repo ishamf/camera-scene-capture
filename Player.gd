@@ -11,8 +11,9 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @export var capture_field: Area3D = null
 @export var captured_objects: Node3D = null
 
-@export var mouse_captured = false
 @export var initial_player_position: Node3D = null
+
+@onready var input_manager = get_node("/root/InputManager")
 
 var mouse_sens = 0.3
 
@@ -22,7 +23,7 @@ var current_angle = 0
 
 
 func _input(event):
-	if event is InputEventMouseMotion and mouse_captured:
+	if event is InputEventMouseMotion and input_manager.mouse_captured:
 		var changeh = -event.relative.x * mouse_sens
 		var changev = -event.relative.y * mouse_sens
 
