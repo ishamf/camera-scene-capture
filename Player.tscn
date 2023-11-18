@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dhsy0mylwsaba"]
+[gd_scene load_steps=9 format=3 uid="uid://dhsy0mylwsaba"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_n2cga"]
 [ext_resource type="ArrayMesh" uid="uid://cqir04q5w2dxu" path="res://IntersectMesh.obj" id="2_2bs1g"]
@@ -8,14 +8,10 @@
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_jwull"]
 points = PackedVector3Array(0, 0, 0, 50, 50, -100, -50, 50, -100, -50, -50, -100, 50, -50, -100)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w0llo"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1qqp8"]
 transparency = 1
 shading_mode = 0
-albedo_color = Color(0, 0.929412, 0.635294, 0.137255)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_4w2h6"]
-material = SubResource("StandardMaterial3D_w0llo")
-size = Vector2(0.1, 0.1)
+albedo_color = Color(0.223529, 1, 0.258824, 0.219608)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1qiov"]
 viewport_path = NodePath("Camera/PhotoViewport")
@@ -60,11 +56,19 @@ fov = 53.1
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Camera/CaptureField"]
 shape = SubResource("ConvexPolygonShape3D_jwull")
 
-[node name="CapturingFilter" type="MeshInstance3D" parent="Camera"]
+[node name="CapturingFilter" type="Node3D" parent="Camera"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.1)
-layers = 2
-mesh = SubResource("PlaneMesh_4w2h6")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="Camera/CapturingFilter"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Camera/CapturingFilter/CSGCombiner3D"]
+size = Vector3(0.103, 0.103, 0.001)
+material = SubResource("StandardMaterial3D_1qqp8")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Camera/CapturingFilter/CSGCombiner3D"]
+operation = 2
+size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CapturedPhoto" type="MeshInstance3D" parent="Camera"]
 unique_name_in_owner = true
