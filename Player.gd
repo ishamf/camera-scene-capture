@@ -58,7 +58,7 @@ func create_intersected_body(body: Node3D, is_subtract: bool = false):
 	var collision_body: CollisionObject3D = null
 	var body_parent = body.get_parent()
 
-	var shape_type
+	# var shape_type
 	var body_type
 
 	var nodes_to_check = [body]
@@ -77,14 +77,14 @@ func create_intersected_body(body: Node3D, is_subtract: bool = false):
 			collision_body = node
 			body_type = BodyType.STATIC
 
-		elif node is CollisionShape3D:
-			if node.shape is ConvexPolygonShape3D:
-				shape_type = ShapeType.CONVEX
-			elif node.shape is ConcavePolygonShape3D:
-				shape_type = ShapeType.CONCAVE
-			else:
-				print_debug("Unknown shape type.")
-				return
+		# elif node is CollisionShape3D:
+		# 	if node.shape is ConvexPolygonShape3D:
+		# 		shape_type = ShapeType.CONVEX
+		# 	elif node.shape is ConcavePolygonShape3D:
+		# 		shape_type = ShapeType.CONCAVE
+		# 	else:
+		# 		print_debug("Unknown shape type.")
+		# 		return
 
 	if not body_mesh or not collision_body:
 		print_debug("No mesh or collision body found in the captured object.")
@@ -105,16 +105,19 @@ func create_intersected_body(body: Node3D, is_subtract: bool = false):
 	combiner.add_child(csg_mesh)
 	combiner.add_child(intersector)
 
-	%CapturedObjectsCSG.add_child(combiner)
+	body_parent.add_child(combiner)
 
-	csg_mesh.global_transform = body_mesh.global_transform
+	combiner.global_transform = body_mesh.global_transform
+	intersector.global_transform = %CSGIntersector.global_transform
 
 	combiner._update_shape()
 
 	var mesh_tuple = combiner.get_meshes()
 
-	var new_transform = mesh_tuple[0]
+	var new_mesh_transform = mesh_tuple[0]
 	var new_generated_mesh: Mesh = mesh_tuple[1].duplicate()
+
+	var new_global_transform = combiner.global_transform * new_mesh_transform
 
 	var is_empty_mesh = new_generated_mesh.get_surface_count() == 0
 
@@ -130,7 +133,6 @@ func create_intersected_body(body: Node3D, is_subtract: bool = false):
 
 	if body_type == BodyType.RIGID:
 		var new_body = RigidBody3D.new()
-		new_body.transform = new_transform
 		new_body.add_child(mesh_instance)
 
 		var shape = CollisionShape3D.new()
@@ -154,6 +156,8 @@ func create_intersected_body(body: Node3D, is_subtract: bool = false):
 	combiner.queue_free()
 
 	new_item.set_meta("item_root", true)
+	body_parent.add_child(new_item)
+	new_item.global_transform = new_global_transform
 
 	print("Done")
 	return new_item
@@ -186,7 +190,8 @@ func _process(_delta):
 		for body in bodies:
 			var intersected_body = create_intersected_body(body)
 
-			%CapturedObjects.add_child(intersected_body)
+			intersected_body.reparent(%CapturedObjects)
+
 			intersected_body.set_process_mode(PROCESS_MODE_DISABLED)
 
 		%CapturingFilter.visible = false
@@ -201,11 +206,7 @@ func _process(_delta):
 		var bodies = get_current_captured_bodies()
 
 		for body in bodies:
-			var intersected_body = create_intersected_body(body, true)
-
-			if intersected_body:
-				%CapturedObjects.add_child(intersected_body)
-				intersected_body.reparent(body.get_parent())
+			create_intersected_body(body, true)
 
 			body.queue_free()
 
