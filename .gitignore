@@ -1,5 +1,6 @@
 # Godot 4+ specific ignores
-/export
+/export/output
+/export/*.7z
 .godot/
 *.tmp
 *.blend?
