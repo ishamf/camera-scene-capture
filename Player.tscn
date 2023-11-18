@@ -44,6 +44,17 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.561019, 0)
 current = true
 
+[node name="PhotoViewport" type="SubViewport" parent="Camera"]
+unique_name_in_owner = true
+render_target_update_mode = 0
+
+[node name="PhotoCamera" type="Camera3D" parent="Camera/PhotoViewport"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.561019, 0)
+keep_aspect = 0
+cull_mask = 1048573
+fov = 53.1
+
 [node name="CaptureField" type="Area3D" parent="Camera"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Camera/CaptureField"]
@@ -75,17 +86,6 @@ mesh = ExtResource("2_2bs1g")
 [node name="CapturedObjectsCSG" type="Node3D" parent="Camera"]
 unique_name_in_owner = true
 visible = false
-
-[node name="PhotoViewport" type="SubViewport" parent="Camera"]
-unique_name_in_owner = true
-render_target_update_mode = 0
-
-[node name="PhotoCamera" type="Camera3D" parent="Camera/PhotoViewport"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.561019, 0)
-keep_aspect = 0
-cull_mask = 1048573
-fov = 53.1
 
 [node name="ReenableFilterTimer" type="Timer" parent="."]
 wait_time = 2.0

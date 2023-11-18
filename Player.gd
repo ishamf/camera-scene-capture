@@ -53,9 +53,10 @@ enum BodyType {
 }
 
 
-func intersect_new_body(body: Node3D):
+func create_intersected_body(body: Node3D, is_subtract: bool = false):
 	var body_mesh: MeshInstance3D = null
 	var collision_body: CollisionObject3D = null
+	var body_parent = body.get_parent()
 
 	var shape_type
 	var body_type
@@ -98,6 +99,9 @@ func intersect_new_body(body: Node3D):
 
 	intersector.visible = true
 
+	if is_subtract:
+		intersector.operation = CSGShape3D.OPERATION_SUBTRACTION
+
 	combiner.add_child(csg_mesh)
 	combiner.add_child(intersector)
 
@@ -111,6 +115,13 @@ func intersect_new_body(body: Node3D):
 
 	var new_transform = mesh_tuple[0]
 	var new_generated_mesh: Mesh = mesh_tuple[1].duplicate()
+
+	var is_empty_mesh = new_generated_mesh.get_surface_count() == 0
+
+	if is_empty_mesh:
+		print_debug("Empty mesh generated.")
+		combiner.queue_free()
+		return null
 
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = new_generated_mesh
@@ -130,19 +141,15 @@ func intersect_new_body(body: Node3D):
 		new_item = new_body
 
 	else:
-		if shape_type == ShapeType.CONVEX:
-			mesh_instance.create_multiple_convex_collisions()
-			new_item = mesh_instance
-		else:
-			var new_body = StaticBody3D.new()
-			mesh_instance.add_child(new_body)
+		var new_body = StaticBody3D.new()
+		mesh_instance.add_child(new_body)
 
-			var shape = CollisionShape3D.new()
+		var shape = CollisionShape3D.new()
 
-			new_body.add_child(shape)
-			shape.shape = mesh_instance.mesh.create_trimesh_shape()
+		new_body.add_child(shape)
+		shape.shape = mesh_instance.mesh.create_trimesh_shape()
 
-			new_item = mesh_instance
+		new_item = mesh_instance
 
 	combiner.queue_free()
 
@@ -152,21 +159,32 @@ func intersect_new_body(body: Node3D):
 	return new_item
 
 
+func get_current_captured_bodies():
+	var bodies = []
+
+	var raw_bodies = capture_field.get_overlapping_bodies()
+
+	for rb in raw_bodies:
+		var body = rb
+
+		while not body.get_scene_file_path() and not body.has_meta("item_root"):
+			body = body.get_parent()
+
+		bodies.append(body)
+
+	return bodies
+
+
 func _process(_delta):
 	if Input.is_action_just_pressed("capture_photo"):
 		for data in captured_objects_data:
 			data["combiner"].queue_free()
 		captured_objects_data.clear()
 
-		var bodies = capture_field.get_overlapping_bodies()
+		var bodies = get_current_captured_bodies()
 
-		for coll in bodies:
-			var body = coll
-
-			while not body.get_scene_file_path() and not body.has_meta("item_root"):
-				body = body.get_parent()
-
-			var intersected_body = intersect_new_body(body)
+		for body in bodies:
+			var intersected_body = create_intersected_body(body)
 
 			%CapturedObjects.add_child(intersected_body)
 			intersected_body.set_process_mode(PROCESS_MODE_DISABLED)
@@ -180,6 +198,17 @@ func _process(_delta):
 		%CapturedPhoto.visible = true
 
 	if Input.is_action_just_pressed("apply_photo"):
+		var bodies = get_current_captured_bodies()
+
+		for body in bodies:
+			var intersected_body = create_intersected_body(body, true)
+
+			if intersected_body:
+				%CapturedObjects.add_child(intersected_body)
+				intersected_body.reparent(body.get_parent())
+
+			body.queue_free()
+
 		for child in captured_objects.get_children():
 			child.reparent(get_parent())
 			child.set_process_mode(PROCESS_MODE_INHERIT)
