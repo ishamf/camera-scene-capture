@@ -19,8 +19,6 @@ var mouse_sens = 0.3
 
 var current_angle = 0
 
-@export var captured_objects_data = []
-
 
 func _input(event):
 	if event is InputEventMouseMotion and input_manager.mouse_captured:
@@ -140,14 +138,14 @@ func create_intersected_body(body: Node3D, is_subtract: bool = false):
 
 	else:
 		var new_body = StaticBody3D.new()
-		mesh_instance.add_child(new_body)
+		new_body.add_child(mesh_instance)
 
 		var shape = CollisionShape3D.new()
 
 		new_body.add_child(shape)
 		shape.shape = mesh_instance.mesh.create_trimesh_shape()
 
-		new_item = mesh_instance
+		new_item = new_body
 
 	combiner.queue_free()
 
@@ -177,14 +175,16 @@ func get_current_captured_bodies():
 
 func _process(_delta):
 	if Input.is_action_just_pressed("capture_photo"):
-		for data in captured_objects_data:
-			data["combiner"].queue_free()
-		captured_objects_data.clear()
+		for child in captured_objects.get_children():
+			child.queue_free()
 
 		var bodies = get_current_captured_bodies()
 
 		for body in bodies:
 			var intersected_body = create_intersected_body(body)
+
+			if not intersected_body:
+				continue
 
 			intersected_body.reparent(%CapturedObjects)
 
@@ -247,4 +247,5 @@ func _physics_process(delta):
 
 
 func _on_reenable_filter_timer_timeout():
-	%CapturingFilter.visible = true
+	if not %CapturedPhoto.visible:
+		%CapturingFilter.visible = true
