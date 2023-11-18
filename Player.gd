@@ -84,8 +84,6 @@ func intersect_new_body(body: Node3D):
 			else:
 				print_debug("Unknown shape type.")
 				return
-			# We're recreating the collision object later
-			node.queue_free()
 
 	if not body_mesh or not collision_body:
 		print_debug("No mesh or collision body found in the captured object.")
@@ -95,11 +93,6 @@ func intersect_new_body(body: Node3D):
 
 	csg_mesh.mesh = body_mesh.mesh.duplicate()
 
-	if body != collision_body:
-		csg_mesh.transform = body.transform * collision_body.transform
-	else:
-		csg_mesh.transform = body.transform
-
 	var combiner = CSGCombiner3D.new()
 	var intersector: CSGMesh3D = %CSGIntersector.duplicate()
 
@@ -107,6 +100,10 @@ func intersect_new_body(body: Node3D):
 
 	combiner.add_child(csg_mesh)
 	combiner.add_child(intersector)
+
+	%CapturedObjectsCSG.add_child(combiner)
+
+	csg_mesh.global_transform = body_mesh.global_transform
 
 	combiner._update_shape()
 
@@ -169,17 +166,17 @@ func _process(_delta):
 			while not body.get_scene_file_path() and not body.has_meta("item_root"):
 				body = body.get_parent()
 
-			var new_body = body.duplicate()
-			body.add_sibling(new_body)
-			new_body.reparent(%CapturedObjects)
-			var intersected_body = intersect_new_body(new_body)
-			new_body.queue_free()
+			var intersected_body = intersect_new_body(body)
+
 			%CapturedObjects.add_child(intersected_body)
 			intersected_body.set_process_mode(PROCESS_MODE_DISABLED)
 
 		%CapturingFilter.visible = false
-		%PhotoViewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_ONCE
+
+		# Since the viewport is not a Node3D, it doesn't pass the global transform to its children, we need to transfer it manually
 		%PhotoCamera.global_transform = %Camera.global_transform
+		%PhotoViewport.render_target_update_mode = SubViewport.UpdateMode.UPDATE_ONCE
+
 		%CapturedPhoto.visible = true
 
 	if Input.is_action_just_pressed("apply_photo"):
@@ -189,7 +186,6 @@ func _process(_delta):
 
 		$ReenableFilterTimer.start()
 		%CapturedPhoto.visible = false
-
 
 
 func _physics_process(delta):
